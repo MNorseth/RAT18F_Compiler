@@ -1,52 +1,60 @@
 import java.io.*;
+
 public class lexicalAnalyzer {
-
+	static int[][] fsm;
+	static int row, col;
+	static char[] inputs;
+	
 	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
-
-		File table = new File("C:\\Users\\David\\source\\Compiliers_Lexical_Analyzer/table.csv");
-		int[][] fsm = buildTable(table);
 		
-		File file = new File("C:\\Users\\David\\source\\Compiliers_Lexical_Analyzer/code.txt");
+		File file = new File("C:\\Users\\David\\source\\Compiliers_Lexical_Analyzer/table.csv");
+		buildTable(file);
+		
+		file = new File("C:\\Users\\David\\source\\Compiliers_Lexical_Analyzer/code.txt");
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		
-		//Translates input into table values
-		int character, state = 1;
+		int character, state = 1, inputVal;
 		String lexeme = "";
 		
-		while ((character = br.read()) != -1) {
-			lexeme = lexeme + (char)character;
+		character = br.read(); //waiting for final table, algo needs tweaking
+		while (character != -1) {
 			
-			character = inputTranslation(character);
-			state = fsm[state - 1][character];
+			lexeme = lexeme + (char)character;
+			inputVal = inputTranslation(character);
+			state = fsm[state - 1][inputVal];
 		
 			if (isFinal(state)) {
 				System.out.println(printState(state) + "  " + lexeme);
 				state = 1;
 				lexeme = "";
+				//cut off last elem
+				character = br.read();
+			}
+			else {
+				character = br.read();
 			}
 		}
 		br.close();
 	}
 	//Takes input as .csv file
-	static int[][] buildTable(File file) throws IOException{ // return dim?
+	static void buildTable(File file) throws IOException{ // return dim?
 		
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		
 		String seperator = ",";
 		String[] line = br.readLine().split(seperator);
-		int row = Integer.parseInt(line[0]);
-		int col = Integer.parseInt(line[1]);
-		
-		int[][] fsm = new int[row][col];
+		row = Integer.parseInt(line[0]);
+		col = Integer.parseInt(line[1]);		
+		fsm = new int[row][col];
 
-		/*
 		//build headers
+		//Assuming index 0 is Letters, index 1 is Digits
 		line = br.readLine().split(seperator);
-		for(int i = 0; i < col - 1; i++) {
-			fsm [0][i+1] = line[i].charAt(0);
+		inputs = new char[col];
+		for (int i = 2; i < col; i++) {
+			inputs[i] = line[i].charAt(0);
 		}
-		*/
+		
 		//build table
 		for(int i = 0; i < row; i++) {
 			line = br.readLine().split(seperator);
@@ -54,17 +62,21 @@ public class lexicalAnalyzer {
 				fsm [i][j] = Integer.parseInt(line[j]);
 			}
 		}
-/*
-		//print table		
+		
+		//build state list TODO maybe
+		//for(int i = 0; i < row; i++) {
+			//line = br.readLine().split(seperator);
+		
+		br.close();
+	}
+	
+	static void printTable() {
 		for(int i = 0; i < row; i++) {
 			for(int j = 0; j < col; j++) {
 				System.out.print(fsm[i][j] + " ");
 			}
 			System.out.println();
 		}
-*/	
-		br.close();
-		return fsm;		
 	}
 	
 	//takes ascii value and translates into values to traverse table easier
@@ -75,23 +87,16 @@ public class lexicalAnalyzer {
 		else if (character >= '0' && character <= '9')
 			return 1;
 		else {
-			switch(character) {
-			case '.': return 2; 
-			case '#': return 3;
-			case '\n': return 4; 
-			case '(': return 5; 
-			case '*': return 6; 
-			case ')': return 7; 
-			case '=': return 8; 
-			case '<': return 9; 
-			case '>': return 10; 
-			case ' ': return 11; 
-			default: return 12; 
+			for (int i = 2; i < col - 1; i++) {
+				if (inputs[i] == character) {
+					return i;
+				}
 			}
+			return col-1;
 		}
 	}
 	
-	static boolean isFinal(int state) {
+	static boolean isFinal(int state) { //Edit with final cases, dont forget to change printState
 		switch(state) {
 		case 3: case 5: case 7: case 11: case 15: case 16:
 			return true;
@@ -100,7 +105,7 @@ public class lexicalAnalyzer {
 		}
 	}
 	
-	static String printState(int state) {
+	static String printState(int state) { // Final cases names
 		switch(state) {
 		case 3: return "Identifier";
 		case 5: return "Number";
@@ -109,7 +114,6 @@ public class lexicalAnalyzer {
 		case 15: return "Punctuation";
 		case 16: return "Punctuation";
 		default: return "error";
-		
 	}
 	}
 }
