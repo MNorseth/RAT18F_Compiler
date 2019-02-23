@@ -1,17 +1,18 @@
 import java.io.*;
+import java.util.HashMap;
+//import java.util.Map;
 
 public class lexicalAnalyzer {
 	static int[][] fsm;
 	static int row, col;
 	static char[] inputs;
+	static HashMap<Integer, String> finalStates;
 	
 	public static void main(String[] args) throws IOException {
 		
-		File file = new File("C:\\Users\\David\\source\\Compiliers_Lexical_Analyzer/table.csv");
-		buildTable(file);
+		buildTable("table.csv");
 		
-		file = new File("C:\\Users\\David\\source\\Compiliers_Lexical_Analyzer/code.txt");
-		BufferedReader br = new BufferedReader(new FileReader(file));
+		BufferedReader br = new BufferedReader(new FileReader("code.txt"));
 		
 		int character, state = 1, inputVal;
 		String lexeme = "";
@@ -23,8 +24,8 @@ public class lexicalAnalyzer {
 			inputVal = inputTranslation(character);
 			state = fsm[state - 1][inputVal];
 		
-			if (isFinal(state)) {
-				System.out.println(printState(state) + "  " + lexeme);
+			if (finalStates.containsKey(state)) {
+				System.out.println(finalStates.get(state) + "  " + lexeme);
 				state = 1;
 				lexeme = "";
 				//cut off last elem
@@ -37,7 +38,7 @@ public class lexicalAnalyzer {
 		br.close();
 	}
 	//Takes input as .csv file
-	static void buildTable(File file) throws IOException{ // return dim?
+	static void buildTable(String file) throws IOException{ 
 		
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		
@@ -63,9 +64,14 @@ public class lexicalAnalyzer {
 			}
 		}
 		
-		//build state list TODO maybe
-		//for(int i = 0; i < row; i++) {
-			//line = br.readLine().split(seperator);
+		//build state list, Only records final states
+		finalStates = new HashMap<Integer, String>();
+		for(int i = 0; i < row; i++) {
+			line = br.readLine().split(seperator);
+			if (line.length == 3) {
+				finalStates.put(i, line[1]);	
+			}
+		}
 		
 		br.close();
 	}
@@ -95,25 +101,5 @@ public class lexicalAnalyzer {
 			return col-1;
 		}
 	}
-	
-	static boolean isFinal(int state) { //Edit with final cases, dont forget to change printState
-		switch(state) {
-		case 3: case 5: case 7: case 11: case 15: case 16:
-			return true;
-		default: 
-			return false;	
-		}
-	}
-	
-	static String printState(int state) { // Final cases names
-		switch(state) {
-		case 3: return "Identifier";
-		case 5: return "Number";
-		case 7: return "#_Comment";
-		case 11: return "**_Comment";
-		case 15: return "Punctuation";
-		case 16: return "Punctuation";
-		default: return "error";
-	}
-	}
+
 }
