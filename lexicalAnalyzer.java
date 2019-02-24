@@ -1,12 +1,15 @@
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Vector;
 //import java.util.Map;
 
 public class lexicalAnalyzer {
-	static int[][] fsm;
+	static int[][] fsm; //States are represented by their numbers, only has a -1 offset when traversing table
 	static int row, col;
 	static char[] inputs;
 	static HashMap<Integer, String> finalStates;
+	static Vector<String> keywords;
 	
 	public static void main(String[] args) throws IOException {
 		
@@ -16,22 +19,35 @@ public class lexicalAnalyzer {
 		
 		int character, state = 1, inputVal;
 		String lexeme = "";
-		
-		character = br.read(); //waiting for final table, algo needs tweaking
+
+		character = br.read();//gets rid of first file character
+		character = br.read(); //load first character
+		//waiting for final table, algo needs tweaking
 		while (character != -1) {
 			
-			lexeme = lexeme + (char)character;
 			inputVal = inputTranslation(character);
 			state = fsm[state - 1][inputVal];
 		
-			if (finalStates.containsKey(state)) {
-				System.out.println(finalStates.get(state) + "  " + lexeme);
+			if (isFinal(state)) {
+				
+				if (state != 3) { // special cases, do not use last character
+					lexeme = lexeme + (char)character;
+					character = br.read();
+				}
+
+				
+				if (state == 3 && isKeyword(lexeme))
+					System.out.println("Keyword: " + lexeme);
+				else //if (state != 15)	//Remove to show all 
+					System.out.println(finalStates.get(state) + ": " + lexeme);
+				
+								
 				state = 1;
 				lexeme = "";
-				//cut off last elem
-				character = br.read();
 			}
 			else {
+				if (character != 32) //Spaces
+					lexeme = lexeme + (char)character;
 				character = br.read();
 			}
 		}
@@ -48,7 +64,7 @@ public class lexicalAnalyzer {
 		col = Integer.parseInt(line[1]);		
 		fsm = new int[row][col];
 
-		//build headers
+		//Build headers
 		//Assuming index 0 is Letters, index 1 is Digits
 		line = br.readLine().split(seperator);
 		inputs = new char[col];
@@ -56,7 +72,7 @@ public class lexicalAnalyzer {
 			inputs[i] = line[i].charAt(0);
 		}
 		
-		//build table
+		//Build table
 		for(int i = 0; i < row; i++) {
 			line = br.readLine().split(seperator);
 			for(int j = 0; j < col; j++) {
@@ -64,14 +80,21 @@ public class lexicalAnalyzer {
 			}
 		}
 		
-		//build state list, Only records final states
+		//Build state list, Only records final states
+		line = br.readLine().split(seperator); //blank space
 		finalStates = new HashMap<Integer, String>();
 		for(int i = 0; i < row; i++) {
 			line = br.readLine().split(seperator);
-			if (line.length == 3) {
-				finalStates.put(i, line[1]);	
+			if (line.length == 3) { // Check Flag
+				finalStates.put(i + 1, line[1]);	
 			}
 		}
+		
+		//Build Keyword list
+		line = br.readLine().split(seperator); // Blank line
+		line = br.readLine().split(seperator); //Eliminate header
+		line = br.readLine().split(seperator); //Read keywords
+		keywords = new Vector<String>(Arrays.asList(line));
 		
 		br.close();
 	}
@@ -85,7 +108,7 @@ public class lexicalAnalyzer {
 		}
 	}
 	
-	//takes ascii value and translates into values to traverse table easier
+	//Takes ascii value and translates into values to traverse table easier
 	static int inputTranslation (int character) {
 		//System.out.print((char)character);
 		if (character >= 'A' && character <= 'Z' || character >= 'a' && character <= 'z')
@@ -101,5 +124,12 @@ public class lexicalAnalyzer {
 			return col-1;
 		}
 	}
-
+	
+	static boolean isKeyword(String lexeme) {
+		return keywords.contains(lexeme);
+	}
+	
+	static boolean isFinal (int state) {
+		return finalStates.containsKey(state);
+	}
 }
