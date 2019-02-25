@@ -2,9 +2,10 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Vector;
-//import java.util.Map;
 
 public class lexicalAnalyzer {
+	static BufferedReader br;
+	static int character; // current char being read
 	static int[][] fsm; //States are represented by their numbers, only has a -1 offset when traversing table
 	static int row, col;
 	static char[] inputs;
@@ -15,35 +16,44 @@ public class lexicalAnalyzer {
 		
 		buildTable("table.csv");
 		
-		BufferedReader br = new BufferedReader(new FileReader("code.txt"));
+		br = new BufferedReader(new FileReader("code.txt"));
+		character = br.read();
+		String[] tokens;
 		
-		int character, state = 1, inputVal;
+		while (br.ready()) {
+			tokens = lexer();
+			System.out.println(tokens[0] + ": " + tokens[1]);
+		}
+		
+		br.close();
+	}
+	
+	static String[] lexer() throws IOException{
+		
+		int state = 1, inputVal;
 		String lexeme = "";
-
-		character = br.read();//gets rid of first file character
-		character = br.read(); //load first character
+		String[] tokens = {"Not Found", "Not Found"};//new String[2];
+		
 		//waiting for final table, algo needs tweaking
-		while (character != -1) {
+		while (br.ready()) {
 			
 			inputVal = inputTranslation(character);
 			state = fsm[state - 1][inputVal];
 		
 			if (isFinal(state)) {
 				
-				if (state != 3) { // special cases, do not use last character
+				if (state != 3) {  // special cases, do not use last character
 					lexeme = lexeme + (char)character;
 					character = br.read();
 				}
-
+				tokens[1] = lexeme;
 				
 				if (state == 3 && isKeyword(lexeme))
-					System.out.println("Keyword: " + lexeme);
-				else //if (state != 15)	//Remove to show all 
-					System.out.println(finalStates.get(state) + ": " + lexeme);
+					tokens[0] = "Keyword";
+				else 
+					tokens[0] = finalStates.get(state);
 				
-								
-				state = 1;
-				lexeme = "";
+				return tokens;
 			}
 			else {
 				if (character != 32) //Spaces
@@ -51,8 +61,9 @@ public class lexicalAnalyzer {
 				character = br.read();
 			}
 		}
-		br.close();
+		return tokens;
 	}
+	
 	//Takes input as .csv file
 	static void buildTable(String file) throws IOException{ 
 		
