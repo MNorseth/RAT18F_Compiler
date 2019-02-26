@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Vector;
-
+ 
 public class lexicalAnalyzer {
 	static BufferedReader br;
 	static int character; // current char being read
@@ -17,15 +17,18 @@ public class lexicalAnalyzer {
 		buildTable("table.csv");
 		
 		br = new BufferedReader(new FileReader("code.txt"));
+		PrintWriter out = new PrintWriter(new FileWriter("output.txt"));
 		character = br.read();
 		String[] tokens;
-		
+
 		while (br.ready()) {
 			tokens = lexer();
 			System.out.println(tokens[0] + ": " + tokens[1]);
+			//out.println(tokens[0] + ": " + tokens[1]);
+
 		}
-		
 		br.close();
+		out.close();
 	}
 	
 	static String[] lexer() throws IOException{
@@ -80,7 +83,7 @@ public class lexicalAnalyzer {
 		line = br.readLine().split(seperator);
 		inputs = new char[col];
 		for (int i = 2; i < col; i++) {
-			inputs[i] = line[i].charAt(0);
+				inputs[i] = line[i].charAt(0);
 		}
 		
 		//Build table
@@ -126,10 +129,12 @@ public class lexicalAnalyzer {
 			return 0;
 		else if (character >= '0' && character <= '9')
 			return 1;
+		else if (character == ',') // special case, CSV file limitation
+			return col - 2;
 		else {
-			for (int i = 2; i < col - 1; i++) {
+			for (int i = 2; i < col - 2; i++) { //Change to -1 offset ^
 				if (inputs[i] == character) {
-					return i;
+					return i; 
 				}
 			}
 			return col-1;
