@@ -9,8 +9,10 @@ public class lexicalAnalyzer {
 	static int[][] fsm; //States are represented by their numbers, only has a -1 offset when traversing table
 	static int row, col;
 	static char[] inputs;
+	static boolean lastCharFlag;
 	static HashMap<Integer, String> finalStates;
 	static Vector<String> keywords;
+	static Vector<Integer> backup;
 	
 	public static void main(String[] args) throws IOException {
 		
@@ -20,11 +22,12 @@ public class lexicalAnalyzer {
 		PrintWriter out = new PrintWriter(new FileWriter("output.txt"));
 		character = br.read();
 		String[] tokens;
+		lastCharFlag = false;
 
-		while (br.ready()) {
+		while (character != -1) {
 			tokens = lexer();
-			System.out.println(tokens[0] + ": " + tokens[1]);
-			//out.println(tokens[0] + ": " + tokens[1]);
+			//System.out.println(tokens[0] + ": " + tokens[1]);
+			out.println(tokens[0] + ": " + tokens[1]);
 
 		}
 		br.close();
@@ -32,22 +35,22 @@ public class lexicalAnalyzer {
 	}
 	
 	static String[] lexer() throws IOException{
-		
+
 		int state = 1, inputVal;
 		String lexeme = "";
-		String[] tokens = {"Not Found", "Not Found"};//new String[2];
+		String[] tokens = {"Not Found", "Not Found"};
 		
 		//waiting for final table, algo needs tweaking
-		while (br.ready()) {
-			
+		while(character != -1) {
 			inputVal = inputTranslation(character);
 			state = fsm[state - 1][inputVal];
 		
 			if (isFinal(state)) {
 				
-				if (state != 3) {  // special cases, do not use last character
+				if (!backup.contains(state)) {  
 					lexeme = lexeme + (char)character;
 					character = br.read();
+					
 				}
 				tokens[1] = lexeme;
 				
@@ -55,16 +58,22 @@ public class lexicalAnalyzer {
 					tokens[0] = "Keyword";
 				else 
 					tokens[0] = finalStates.get(state);
-				
+				if (lastCharFlag)
+					character = -1;
 				return tokens;
 			}
 			else {
-				if (character != 32) //Spaces
+				if (state != 1) //Spaces, new line, etc
 					lexeme = lexeme + (char)character;
-				character = br.read();
-			}
+				
+				//check for end of file and add space to put last lexeme to final state
+				if ((character = br.read()) == -1 ) {
+					lastCharFlag = true;
+					character = 32;
+			} 
 		}
-		return tokens;
+		} 
+		return tokens; //error
 	}
 	
 	//Takes input as .csv file
@@ -97,11 +106,14 @@ public class lexicalAnalyzer {
 		//Build state list, Only records final states
 		line = br.readLine().split(seperator); //blank space
 		finalStates = new HashMap<Integer, String>();
+		backup = new Vector<Integer>();
 		for(int i = 0; i < row; i++) {
 			line = br.readLine().split(seperator);
-			if (line.length == 3) { // Check Flag
+			if (line.length > 2 ) { // Check Final State Flag
 				finalStates.put(i + 1, line[1]);	
 			}
+			if (line.length == 4) // Check Backup flag
+				backup.addElement(i+1);
 		}
 		
 		//Build Keyword list
@@ -130,7 +142,7 @@ public class lexicalAnalyzer {
 		else if (character >= '0' && character <= '9')
 			return 1;
 		else if (character == ',') // special case, CSV file limitation
-			return col - 2;
+			return 14; //FIX LATER TEMP VAR
 		else {
 			for (int i = 2; i < col - 2; i++) { //Change to -1 offset ^
 				if (inputs[i] == character) {
