@@ -1,64 +1,26 @@
-end of ! comment: !Findlargestvaluebetweentwonumbers!
-General punctuation: 
-
-General punctuation: 
-
+Comment: ! Find largest value between two numbers!
 Keyword: int
-End of identifier: num1
-General punctuation: ,
-End of identifier: num2
-General punctuation: ,
-End of identifier: large$
-General punctuation: 
-
-General punctuation: 
-
-Keyword: if
-Found (: (
-End of identifier: num1
-Found > : >
-End of identifier: num2
-General punctuation: )
-General punctuation: 
-
-General punctuation: 
-
-Found {: {
-General punctuation: 
-
-General punctuation: 
-
-General punctuation: 	
-End of identifier: large
-Found =: =
-End of identifier: num1$
-General punctuation: ;
-General punctuation: 
-
-General punctuation: 
-
-General punctuation: }
-General punctuation: 
-
-General punctuation: 
-
-Keyword: else
-General punctuation: 
-
-General punctuation: 
-
-Found {: {
-General punctuation: 
-
-General punctuation: 
-
-General punctuation: 	
-End of identifier: large
-Found =: =
-End of identifier: num2$
-General punctuation: ;
-General punctuation: 
-
-General punctuation: 
-
-General punctuation: }
+Identifier: num1
+Comma: ,
+Identifier: num2
+Comma: ,
+Identifier: large$
+Identifier: if
+(: (
+Identifier: num1
+>: >
+Identifier: num2
+): )
+{: {
+Identifier: large
+=: =
+Identifier: num1$
+;: ;
+}: }
+Identifier: else
+{: {
+Identifier: large
+=: =
+Identifier: num2$
+;: ;
+}: }
