@@ -5,13 +5,11 @@ Lexical Analyzer.
 
 This Program outputs tokens. It is written on Java and compiled on eclipse.
 
-To run program place Lex_analzer.jar, code.txt, and table.csv into one directory
+To run program place Lex_analzer.jar, code.txt, and table.csv into one directory and run .jar
 
 Inputs: table.csv, code.txt
 
 Output: output.txt
-
-To run program place Lex_analzer.jar, code.txt, and table.csv into one directory
 
 Format for .csv file
 
