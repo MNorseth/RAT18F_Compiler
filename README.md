@@ -1,5 +1,5 @@
 # Compiler
-Written by David Luong 2019.
+Written by David Luong, Mitchell Norseth, and Mauricio Macias.
 
 Lexical Analyzer.
 
