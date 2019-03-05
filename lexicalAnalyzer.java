@@ -17,6 +17,7 @@ public class lexicalAnalyzer {
 	public static void main(String[] args) throws IOException {
 		
 		buildTable("table.csv");
+		specialCases(); //EDIT with characters like , \n \r etc
 		
 		br = new BufferedReader(new FileReader("code.txt"));
 		PrintWriter out = new PrintWriter(new FileWriter("output.txt"));
@@ -26,7 +27,7 @@ public class lexicalAnalyzer {
 
 		while (character != -1) {
 			tokens = lexer();
-			//System.out.println(tokens[0] + ": " + tokens[1]);
+			System.out.println(tokens[0] + ": " + tokens[1]);
 			out.println(tokens[0] + ": " + tokens[1]);
 
 		}
@@ -125,6 +126,12 @@ public class lexicalAnalyzer {
 		br.close();
 	}
 	
+	static void specialCases() {
+		inputs[14] = ',';
+		inputs[15] = '\r';
+		inputs[16] = '\n';
+	}
+	
 	static void printTable() {
 		for(int i = 0; i < row; i++) {
 			for(int j = 0; j < col; j++) {
@@ -141,8 +148,6 @@ public class lexicalAnalyzer {
 			return 0;
 		else if (character >= '0' && character <= '9')
 			return 1;
-		else if (character == ',') // special case, CSV file limitation
-			return 14; //FIX LATER TEMP VAR
 		else {
 			for (int i = 2; i < col - 2; i++) { //Change to -1 offset ^
 				if (inputs[i] == character) {
