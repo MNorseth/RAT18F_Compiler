@@ -2,8 +2,8 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Vector;
- 
-public class lexicalAnalyzer {
+
+public class LexicalAnalyzer {
 	static BufferedReader br;
 	static int character; // current char being read
 	static int[][] fsm; //States are represented by their numbers, only has a -1 offset when traversing table
@@ -14,32 +14,46 @@ public class lexicalAnalyzer {
 	static Vector<String> keywords;
 	static Vector<Integer> backup;
 	
-	public static void main(String[] args) throws IOException {
-		
+	public LexicalAnalyzer() throws IOException {
 		buildTable("table.csv");
 		specialCases(); //EDIT with characters like , \n \r etc
-		
 		br = new BufferedReader(new FileReader("code.txt"));
-		PrintWriter out = new PrintWriter(new FileWriter("output.txt"));
 		character = br.read();
-		String[] tokens;
 		lastCharFlag = false;
-
-		while (character != -1) {
+		
+	}
+	
+	public void run() throws IOException {
+		String[] tokens;
+		
+		while (!lastCharFlag) {
 			tokens = lexer();
 			System.out.println(tokens[0] + ": " + tokens[1]);
-			out.println(tokens[0] + ": " + tokens[1]);
-
 		}
-		br.close();
+	}
+	
+	public void runOutputFile() throws IOException {
+		PrintWriter out = new PrintWriter(new FileWriter("output.txt"));
+		String[] tokens = {"",""};
+		
+		while (tokens[0] != "-1") {
+			tokens = lexer();
+			out.println(tokens[0] + ": " + tokens[1]);
+		}
 		out.close();
 	}
 	
+	//check if we need this
+	//public void close() throws IOException {
+		//br.close();
+	//}
+	
+	//Returns {"Type", "Lexeme"}, or outputs {"-1" , "-1"} at end of file
 	static String[] lexer() throws IOException{
 
 		int state = 1, inputVal;
 		String lexeme = "";
-		String[] tokens = {"Not Found", "Not Found"};
+		String[] tokens = {"-1", "-1"};
 		
 		//waiting for final table, algo needs tweaking
 		while(character != -1) {
@@ -59,8 +73,10 @@ public class lexicalAnalyzer {
 					tokens[0] = "Keyword";
 				else 
 					tokens[0] = finalStates.get(state);
-				if (lastCharFlag)
+				if (lastCharFlag) {
+					br.close();
 					character = -1;
+				}
 				return tokens;
 			}
 			else {
@@ -74,7 +90,8 @@ public class lexicalAnalyzer {
 			} 
 		}
 		} 
-		return tokens; //error
+		lastCharFlag = true;
+		return tokens; //means error
 	}
 	
 	//Takes input as .csv file
