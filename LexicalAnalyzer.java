@@ -13,6 +13,7 @@ public class LexicalAnalyzer {
 	static HashMap<Integer, String> finalStates;
 	static Vector<String> keywords;
 	static Vector<Integer> backup;
+	static Boolean commentOutput; // outputs comments
 	
 	public LexicalAnalyzer() throws IOException {
 		buildTable("table.csv");
@@ -20,7 +21,7 @@ public class LexicalAnalyzer {
 		br = new BufferedReader(new FileReader("code.txt"));
 		character = br.read();
 		lastCharFlag = false;
-		
+		commentOutput = false;
 	}
 	
 	public void run() throws IOException {
@@ -43,13 +44,8 @@ public class LexicalAnalyzer {
 		out.close();
 	}
 	
-	//check if we need this
-	//public void close() throws IOException {
-		//br.close();
-	//}
-	
 	//Returns {"Type", "Lexeme"}, or outputs {"-1" , "-1"} at end of file
-	static String[] lexer() throws IOException{
+	public String[] lexer() throws IOException{
 
 		int state = 1, inputVal;
 		String lexeme = "";
@@ -74,9 +70,12 @@ public class LexicalAnalyzer {
 				else 
 					tokens[0] = finalStates.get(state);
 				if (lastCharFlag) {
-					br.close();
 					character = -1;
 				}
+				if (!commentOutput && (tokens[0].equals("Comment") 
+						|| tokens[0].equals("Punctuation")))
+						return lexer();
+			
 				return tokens;
 			}
 			else {
@@ -90,6 +89,7 @@ public class LexicalAnalyzer {
 			} 
 		}
 		} 
+		br.close();
 		lastCharFlag = true;
 		return tokens; //means error
 	}
