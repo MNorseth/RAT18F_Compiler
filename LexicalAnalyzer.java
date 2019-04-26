@@ -16,7 +16,7 @@ public class LexicalAnalyzer {
 	static Boolean commentOutput; // outputs comments
 	
 	public LexicalAnalyzer() throws IOException {
-		buildTable("table.csv");
+		buildTable("lex_table.csv");
 		specialCases(); //EDIT with characters like , \n \r etc
 		br = new BufferedReader(new FileReader("code.txt"));
 		character = br.read();
