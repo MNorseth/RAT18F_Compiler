@@ -1,0 +1,8 @@
+6,8,,,,,,,
+~,i,+,-,*,/,(,),$
+S,i=E,~,~,~,~,~,~,~
+E,TQ,~,~,~,~,TQ,~,~
+Q,~,+TQ,-TQ,~,~,~,EPSILON,EPSILON
+T,FR,~,~,~,~,FR,~,~
+R,~,EPSILON,EPSILON,*FR,/FR,~,EPSILON,EPSILON
+F,i,~,~,~,~,(E),~,~
