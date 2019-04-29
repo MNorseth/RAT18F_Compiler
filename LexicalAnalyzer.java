@@ -20,6 +20,7 @@ public class LexicalAnalyzer {
 		specialCases(); //EDIT with characters like , \n \r etc
 		br = new BufferedReader(new FileReader("code.txt"));
 		character = br.read();
+		character = br.read();
 		lastCharFlag = false;
 		commentOutput = false;
 	}
@@ -56,7 +57,7 @@ public class LexicalAnalyzer {
 			inputVal = inputTranslation(character);
 			state = fsm[state - 1][inputVal];
 		
-			if (isFinal(state)) {
+			if (isFinal(state) || lastCharFlag) {
 				
 				if (!backup.contains(state)) {  
 					lexeme = lexeme + (char)character;
@@ -83,7 +84,7 @@ public class LexicalAnalyzer {
 					lexeme = lexeme + (char)character;
 				
 				//check for end of file and add space to put last lexeme to final state
-				if ((character = br.read()) == -1 ) {
+				if ((character = br.read()) == -1 && state != 1) {
 					lastCharFlag = true;
 					character = 32;
 			} 
