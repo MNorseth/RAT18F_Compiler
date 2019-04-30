@@ -18,7 +18,7 @@ public class Parser {
 	public Parser() throws IOException {
 		lex = new LexicalAnalyzer();
 		buildTable("syntax_table.csv");
-		printTable();
+		//printTable();
 		
 		stack = new Stack<String>();
 		stack.push("$");
@@ -32,6 +32,8 @@ public class Parser {
 	public void runOutput() throws IOException {
 		out = new PrintWriter(new FileWriter("output.txt"));
 		out.println("Token: " + token[0] +  "     Lexeme: " + token[1]);
+		Boolean valid = false;
+		String str = "";
 		
 		while (!stack.isEmpty()) {
 			if (!Character.isUpperCase(stack.peek().charAt(0))) { //is terminal
@@ -40,19 +42,20 @@ public class Parser {
 					
 					stack.pop();
 					token = lex.lexer();
-					if (token[0].equals("-1")) {
+					if (token[0].equals("-1") || token[1].equals(";")) {
 						token[0] = "$";
 						token[1] = "$";
 					}
 					out.println("Token: " + token[0] +  "     Lexeme: " + token[1]);
 				}
 				else {
-				out.println("Error"); //
+					valid = false;
+					break;	
 				}
 			}		
 			else {// if nonterminal
-				Boolean valid = false;
-				String str = tableTranslation(stack.peek(), token);
+				valid = false;
+				str = tableTranslation(stack.peek(), token);
 				String term;
 				if (!str.equals("~")) {
 					valid = true;
@@ -66,11 +69,16 @@ public class Parser {
 					}
 				
 				}
-				if (!valid) {
-					out.println("Error"); //
-				}
+				else 
+					break;
 			}
 		}
+		if (!valid) {
+			out.println("Error Lexeme: " + token[0] + "  " + token[1]); 
+			out.println("Symbol table data: " + str + "  Top of stack: " + stack.peek());
+		}
+		else
+			out.println("Syntax is valid.");
 		out.close();
 	}
 	
@@ -92,8 +100,13 @@ public class Parser {
 				continue;
 			}
 		}
-		if (table[_row][_col].equals("~"))
+		if (_col == -1 || _row == -1) {
+			out.println("Error reading token: Token: " + token[0] + "  " + token[1] + "  Nonterminal: " + term);
 			return "-1";
+		}
+		else
+			if (table[_row][_col].equals("~"))
+				return "-1";
 		
 		return table[_row][_col];
 	}
@@ -140,7 +153,7 @@ public class Parser {
 				System.out.print(table[i][j] + " ");
 			}
 			System.out.println();
-		}
+		}	
 	}
 		
 }
