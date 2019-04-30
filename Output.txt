@@ -1,26 +1,120 @@
-Comment: ! Find largest value between two numbers!
-Keyword: int
-Identifier: num1
-Comma: ,
-Identifier: num2
-Comma: ,
-Identifier: large$
-Identifier: if
-(: (
-Identifier: num1
->: >
-Identifier: num2
-): )
-{: {
-Identifier: large
-=: =
-Identifier: num1$
-;: ;
-}: }
-Identifier: else
-{: {
-Identifier: large
-=: =
-Identifier: num2$
-;: ;
-}: }
+Token: Identifier     Lexeme: a
+S  -> i=E
+Token: Assignment Operator     Lexeme: =
+Token: Identifier     Lexeme: b
+E  -> TQ
+T  -> FR
+F  -> i
+Token: Operator     Lexeme: +
+R  -> EPSILON
+Q  -> +TQ
+Token: Identifier     Lexeme: x
+T  -> FR
+F  -> i
+Token: $     Lexeme: $
+R  -> EPSILON
+Q  -> EPSILON
+Token: Identifier     Lexeme: in
+
+Syntax is valid.
+
+S  -> i=E
+Token: Assignment Operator     Lexeme: =
+Token: Identifier     Lexeme: d
+E  -> TQ
+T  -> FR
+F  -> i
+Token: Operator     Lexeme: -
+R  -> EPSILON
+Q  -> -TQ
+Token: Identifier     Lexeme: x
+T  -> FR
+F  -> i
+Token: $     Lexeme: $
+R  -> EPSILON
+Q  -> EPSILON
+Token: Identifier     Lexeme: b
+
+Syntax is valid.
+
+S  -> i=E
+Token: Assignment Operator     Lexeme: =
+Token: Identifier     Lexeme: d
+E  -> TQ
+T  -> FR
+F  -> i
+Token: Operator     Lexeme: *
+R  -> *FR
+Token: Identifier     Lexeme: var1
+F  -> i
+Token: $     Lexeme: $
+R  -> EPSILON
+Q  -> EPSILON
+Token: Identifier     Lexeme: b
+
+Syntax is valid.
+
+S  -> i=E
+Token: Assignment Operator     Lexeme: =
+Token: Identifier     Lexeme: var2
+E  -> TQ
+T  -> FR
+F  -> i
+Token: Operator     Lexeme: /
+R  -> /FR
+Token: Identifier     Lexeme: x
+F  -> i
+Token: $     Lexeme: $
+R  -> EPSILON
+Q  -> EPSILON
+Token: Identifier     Lexeme: a
+
+Syntax is valid.
+
+S  -> i=E
+Token: Assignment Operator     Lexeme: =
+Token: Identifier     Lexeme: b
+E  -> TQ
+T  -> FR
+F  -> i
+Token: Operator     Lexeme: +
+R  -> EPSILON
+Q  -> +TQ
+Token: Identifier     Lexeme: x
+T  -> FR
+F  -> i
+Token: Operator     Lexeme: *
+R  -> *FR
+Token: Identifier     Lexeme: d
+F  -> i
+Token: Operator     Lexeme: -
+R  -> EPSILON
+Q  -> -TQ
+Token: Identifier     Lexeme: x
+T  -> FR
+F  -> i
+Token: Operator     Lexeme: -
+R  -> EPSILON
+Q  -> -TQ
+Token: Identifier     Lexeme: d
+T  -> FR
+F  -> i
+Token: Operator     Lexeme: *
+R  -> *FR
+Token: Identifier     Lexeme: var1
+F  -> i
+Token: Operator     Lexeme: /
+R  -> /FR
+Token: Identifier     Lexeme: var2
+F  -> i
+Token: Operator     Lexeme: /
+R  -> /FR
+Token: Identifier     Lexeme: x
+F  -> i
+Token: $     Lexeme: $
+R  -> EPSILON
+Q  -> EPSILON
+Token: $     Lexeme: $
+
+Syntax is valid.
+
