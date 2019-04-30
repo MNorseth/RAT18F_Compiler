@@ -2,5 +2,4 @@ a = b + x;
 in = d - x;
 b = d * var1;
 b = var2 / x;
-a = b + x * d - x - d * var1 / var2 / x;
-
+a = b + x * d - x - d * var1 / var2 / p;
