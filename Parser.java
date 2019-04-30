@@ -21,31 +21,43 @@ public class Parser {
 		//printTable();
 		
 		stack = new Stack<String>();
-		stack.push("$");
-		stack.push("S");
 		token = new String[2];
-		token = lex.lexer();
-		
-		
+		token = lex.lexer();	
 	}
 	
 	public void runOutput() throws IOException {
 		out = new PrintWriter(new FileWriter("output.txt"));
 		out.println("Token: " + token[0] +  "     Lexeme: " + token[1]);
+		
+		while(!run()); 
+		
+		out.close();
+	}
+	
+	//Return true if it hits eof of file
+	static Boolean run() throws IOException {
+		stack.push("$");
+		stack.push("S");
 		Boolean valid = false;
+		Boolean eof = false;
 		String str = "";
 		
 		while (!stack.isEmpty()) {
 			if (!Character.isUpperCase(stack.peek().charAt(0))) { //is terminal
 				
 				if (stack.peek().equals(token[1]) || stack.peek().equals("i")) { 
-					
+
 					stack.pop();
 					token = lex.lexer();
-					if (token[0].equals("-1") || token[1].equals(";")) {
+					
+					switch (token[1]) {
+					case "-1":
+						eof = true;
+					case ";":
 						token[0] = "$";
 						token[1] = "$";
 					}
+	
 					out.println("Token: " + token[0] +  "     Lexeme: " + token[1]);
 				}
 				else {
@@ -67,19 +79,22 @@ public class Parser {
 							stack.push(term);
 						}
 					}
-				
 				}
 				else 
 					break;
 			}
 		}
+
+		out.println();
 		if (!valid) {
 			out.println("Error Lexeme: " + token[0] + "  " + token[1]); 
 			out.println("Symbol table data: " + str + "  Top of stack: " + stack.peek());
 		}
 		else
 			out.println("Syntax is valid.");
-		out.close();
+		out.println();
+		
+		return eof;
 	}
 	
 	static String tableTranslation(String term, String[] token) {
