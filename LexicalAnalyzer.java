@@ -20,7 +20,7 @@ public class LexicalAnalyzer {
 		specialCases(); //EDIT with characters like , \n \r etc
 		br = new BufferedReader(new FileReader("code.txt"));
 		character = br.read();
-		character = br.read();
+		//character = br.read();
 		lastCharFlag = false;
 		commentOutput = false;
 	}
