@@ -67,7 +67,7 @@ public class Parser {
 			}		
 			else {// if nonterminal
 				valid = false;
-				str = tableTranslation(stack.peek(), token);
+				str = tableTranslation();
 				String term;
 				if (!str.equals("~")) {
 					valid = true;
@@ -97,14 +97,14 @@ public class Parser {
 		return eof;
 	}
 	
-	static String tableTranslation(String term, String[] token) {
+	static String tableTranslation() {
 		String lex = token[1];
 		if (token[0].equals("Identifier"))
 			lex = "i";
 		
 		int _row = -1, _col = -1;
 		for(int i = 0; i < row; i++) {
-			if(nonTerminals[i].equals(term)) {
+			if(nonTerminals[i].equals(stack.peek())) {
 				_row = i;
 				continue;
 			}
@@ -116,7 +116,7 @@ public class Parser {
 			}
 		}
 		if (_col == -1 || _row == -1) {
-			out.println("Error reading token: Token: " + token[0] + "  " + token[1] + "  Nonterminal: " + term);
+			out.println("Error reading token: Token: " + token[0] + "  " + token[1] + "  Nonterminal: " + stack.peek());
 			return "-1";
 		}
 		else
