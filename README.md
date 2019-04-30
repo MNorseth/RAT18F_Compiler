@@ -3,7 +3,7 @@ Written by David Luong, Mitchell Norseth, and Mauricio Macias.
 
 It is written on Java and compiled on eclipse.
 
-To run program place Lex_analzer.jar, code.txt, lex_table.csv, syntax_table.csv into one directory and run .jar
+To run program place Parser.jar, code.txt, lex_table.csv, syntax_table.csv into one directory and run .jar
 
 Parser Class.
 
