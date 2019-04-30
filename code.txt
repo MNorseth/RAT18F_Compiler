@@ -1,10 +1,6 @@
-! Find largest value between two numbers!
-int num1, num2, large$
-if(num1 > num2)
-{
-	large = num1$;
-}
-else
-{
-	large = num2$;
-}
+a = b + x;
+in = d - x;
+b = d * var1;
+b = var2 / x;
+a = b + x * d - x - d * var1 / var2 / x;
+
