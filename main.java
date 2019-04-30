@@ -10,3 +10,4 @@ public class main {
 			Parser pars = new Parser();
 			pars.runOutput();
 }
+}
